@@ -6,8 +6,9 @@ These files were made for an **educational purpose only**.
 ## Reverse Backdoor
 */reverse_backdoor*  
 This little malware will create a backdoor to the machine where it's executed.  
-It's adapted for Windows and it's currently detected by Windows Defender.
-The backdoor allows me to get acces to the victim machine via a command prompt.
+It's adapted for Windows and it's currently detected by Windows Defender.  
+The backdoor allows me to get acces to the victim machine via a command prompt.  
+The backdoor will hide herself and start at each victim start-up.  
 
 ## Key Logger
 */key_logger*  
